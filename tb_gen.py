@@ -1,5 +1,6 @@
 ## Image to MODELSIM testbench transcript generator
 ## 24/04/2023
+## github.com/darkquesh
 
 from PIL import Image
 import numpy as np
