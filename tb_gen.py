@@ -1,5 +1,6 @@
 ## Image to MODELSIM testbench transcript generator
-## 24/04/2023
+## 26/04/2023
+## v1.0.1
 ## github.com/darkquesh
 
 from PIL import Image
@@ -23,7 +24,9 @@ DIN = "force -freeze sim:/conv_layer_1/DIN {bits} 0"
 run = "run {dur}ps"
 
 # Create testbench text file to be copy-pasted into transcript window in MODELSIM
-with open('LeNet_num8_tb.txt', 'w') as f:
+tb_text_filename = 'LeNet_num'+number+'_tb.txt'
+
+with open(tb_text_filename, 'w') as f:
     f.write(init)
     f.close()
 
@@ -48,7 +51,7 @@ for index, x in enumerate(bin_array):
         #print("count1:", count1)
         count1 += 1
         if (np.char.equal([bin_array[index+1] if(index < len(bin_array)-1) else bin_array[index]], '00000000')) or (index == len(bin_array)-1):
-            with open('LeNet_num8_tb.txt', 'a') as f:
+            with open(tb_text_filename, 'a') as f:
                 f.write(DIN.format(bits=11111111)+'\n')
                 f.write(run.format(dur=count1*100)+'\n\n')
                 f.close()
@@ -58,7 +61,7 @@ for index, x in enumerate(bin_array):
         count0 += 1
         if (np.char.equal([bin_array[index+1] if(index < len(bin_array)-1) else bin_array[index]], '11111111')) or (index == len(bin_array)-1):
             print(x, index)
-            with open('LeNet_num8_tb.txt', 'a') as f:
+            with open(tb_text_filename, 'a') as f:
                 f.write(DIN.format(bits='00000000')+'\n')
                 f.write(run.format(dur=count0*100)+'\n\n')
                 f.close()
@@ -66,12 +69,11 @@ for index, x in enumerate(bin_array):
     else:
         print("Error!")
 
-end1 = """run 900ps
-force -freeze sim:/conv_layer_1/EN_STREAM 0 0
-run 100ps
+end1 = """run 0.1ms
 
 """
 
-with open('LeNet_num8_tb.txt', 'a') as f:
+with open(tb_text_filename, 'a') as f:
     f.write(end1)
     f.close()
+    
